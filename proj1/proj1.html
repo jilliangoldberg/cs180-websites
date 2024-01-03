@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS 180 Project 1: Colorizing the Prokudin-Gorskii Collection</title>
+</head>
+<body>
+    <h1>CS 180 Project 1: Colorizing the Prokudin-Gorskii Collection</h1>
+    <h3>Jillian Goldberg (SID: 3035565792)</h3>
+
+    <h2>Overview</h2>
+    The goal of this project is to use image processing techniques to produce a color image from the <i>Prokudin-Gorskii</i> Collection. To do so, we extracted 3 color channel images and aligned them together to form a single image.
+    My approach was the following:
+    <ol> 
+        <li>Load in the images and split into blue, green, and red.</li>
+        <li>Crop borders off the images to ensure easier alignment.</li>
+        <li>Research the difference between SSD and NCC algorithms, which calculates the difference in images. This is useful when assessing errors between alignment.</li>
+        <li>Utilize blue as an anchor, testing the best displacement through iteration for green and red.</li>
+        <li>Finally, stacking the 3 images on top of each other to make a final image.</li>
+    </ol>
+    One additional challenging piece of this project was the <code>.tif</code> images, since they were much larger and thus needed a better way to be processed.
+    I looked into the <b>pyramid</b> algorithm, which allows for descaling of images in order to align more efficiently.
+
+    <h2>Challenge</h2>
+    The one image I was not able to properly align was <code>emir.tif</code>, due to the complexity of
+    detail. I tried modifying the algorithm I was using for pyramid, and tried decreasing and increasing the depth of the pyramid and the offsets. 
+    I eventually realized from an Ed Post that the 3 images do not actually have the same brightness values (they are different color channels),
+    making it much more difficult to align.
+    Unfortunately, I ran out of time and was not able to finish debugging this issue. All 13 other photos (93%) are properly aligned!
+
+    <h2>Results</h2>
+    <h2><code>[.jpg]</code></h2>
+    <b>monastery.jpg</b> <br>
+    green shift: [-3  2]
+    red shift: [3 2] <br>
+    <img src="images/monastery.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    <b>tobolsk.jpg</b> <br>
+    green shift: [3 3]
+    red shift: [6 3] <br>
+    <img src="images/tobolsk.jpg" style="width:50%">
+
+    <br>
+    <br>
+    
+    <b>cathedral.jpg</b> <br>
+    green shift: [5 2]
+    red shift: [12 3] <br>
+    <img src="images/cathedral.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    <h2><code>[.tif]</code></h2>
+
+    <br> <br>
+    <b>church.tif</b> <br>
+    green shift: [25  4]
+    red shift: [58 -4] <br>
+    <img src="images/church.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    <b>melons.tif</b> <br>
+    green shift: [7 1]
+    red shift: [15 2] <br>
+    <img src="images/melons.jpg" style="width:50%">
+
+    <br>
+    <br>
+    
+    <b>onion_church.tif</b> <br>
+    green shift: [6 3]
+    red shift: [12 5] <br>
+    <img src="images/onion_church.jpg" style="width:50%">
+
+    <br> <br>
+    <b>icon.tif</b> <br>
+    green shift: [41  17]
+    red shift: [90 23] <br>
+    <img src="images/icon.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    <b>harvesters.tif</b> <br>
+    green shift: [60 17]
+    red shift: [124  14] <br>
+    <img src="images/harvesters.jpg" style="width:50%">
+
+    <br>
+    <br>
+    
+    <b>sculpture.tif</b> <br>
+    green shift: [ 33 -11]
+    red shift: [140 -27] <br>
+    <img src="images/sculpture.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    
+    <b>lady.tif</b> <br>
+    green shift: [52  8]
+    red shift: [112  12] <br>
+    <img src="images/lady.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    
+    <b>emir.tif</b> <br>
+    <i>(errored)</i><br>
+    green shift: [52  8]
+    red shift: [112  12] <br>
+    <img src="images/emir.jpg" style="width:50%">
+
+    <br><br>
+
+    <h2><code>[jg_******.jpg]</code></h2>
+    Self-selected photos from the collection.
+
+    <br> <br>
+    <b>jg_prison.jpg</b> <br>
+    green shift: [2  -1]
+    red shift: [7 -2] <br>
+    <img src="images/jg_prison.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+    <b>jg_field.jpg</b> <br>
+    green shift: [7 1]
+    red shift: [15 2] <br>
+    <img src="images/jg_field.jpg" style="width:50%">
+
+    <br>
+    <br>
+    
+    <b>jg_lake.jpg</b> <br>
+    green shift: [6 3]
+    red shift: [12 5] <br>
+    <img src="images/jg_lake.jpg" style="width:50%">
+
+    <br>
+    <br>
+
+</body>
+</html>
