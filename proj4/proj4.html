@@ -22,10 +22,12 @@
 </head>
 
 <body>
-<h1 align="middle">CS 180 Project 4a: Image Warping and Mosaicing 📸 🌅 </h1>
+<h1 align="middle">CS 180 Project 4: Image Warping and Mosaicing 📸 🌅 </h1>
 <h2 align="middle">👩🏻‍💻 Jillian Goldberg - Fall 2023&nbsp; </span></h2>
 <br><br>
 
+<h2 align="middle">PART A</h2>
+<hr>
 
 <div>
 <h2 align="middle">📝 Overview</h2>
@@ -209,7 +211,7 @@ used a patching function to adjust the points to each other.</p>
     <table style="width=100%">
       <tr>
         <td>
-          <img src="results/bedroom_warped1.png" align="middle" width="800px"/>
+          <img src="results/bedroom_warped1.png" align="middle" width="500px"/>
           <figcaption align="middle">bedroom warped</figcaption>
         </td>
       </tr>
@@ -257,8 +259,254 @@ used a patching function to adjust the points to each other.</p>
     about homographies or image warping before, so it was exciting to learn something
     new to make images match up with each other. I'm looking forward to part 2.
 </p>
+<br>
+anyways....
 
-<h3>To be continued in part b! :)</h3>
+<h2 align="middle">PART B</h2>
+<hr>
+
+<div>
+<h2 align="middle">📝 Overview</h2>
+<p>
+  The goal of this project is to create a system for automatically stitching images into a mosaic. 
+  A secondary goal is to learn how to read and implement a research paper. This includes tasks such 
+  as detecting features, extracting feature descriptors, matching points between two images, and using 
+  the robust method RANSAC to compute the homography in order to merge the images.
+</p>
+
+<p>
+  Here are the images I'm using, same as part A:
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/bridge4small.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">bridge0</figcaption>
+      </td>
+      <td>
+        <img src="images/bridge2small.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">bridge1</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/bedroom0.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">bedroom0</figcaption>
+      </td>
+      <td>
+        <img src="images/bedroom1.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">bedroom1</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/room1.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">livingroom0</figcaption>
+      </td>
+      <td>
+        <img src="images/room1.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">livingroom1</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2> 👀 Part 1: Detecting corner features in an image</h2>
+
+<p>
+  Part 1 was nice for us, we were given code to find the harris corners. Then we implemented 
+  an Adaptive Non-Maximal Suppression (ANMS).
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="new-results/1_keypoints_bridge0.png" align="middle" width="300px"/>
+        <figcaption align="middle">bridge0 points</figcaption>
+      </td>
+      <td>
+        <img src="new-results/1_keypoints_bridge1.png" align="middle" width="300px"/>
+        <figcaption align="middle">bridge1 points</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2> 😄 Part 2: Extracting a Feature Descriptor</h2>
+
+<p>
+  Next we extracted a feature descriptor for each feature point. We sampled these patches from the larger
+  40x40 window to have a nice big blurred descriptor and remembered to bias/gain-normalize the descriptors.
+</p>
+
+
+<h2> 😎 Part 3: Matching these feature descriptors between two images</h2>
+
+<p>
+  Next, we did feature matching. This was to find pairs of features that look similar and are thus 
+  likely to be good matches. For thresholding, we used the simpler approach due to Lowe of thresholding 
+  on the ratio between the first and the second nearest neighbors. 
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="new-results/3_matchpts_bridge.png" align="middle" width="700px"/>
+        <figcaption align="middle">bridge with matched points</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2> 👀 Part 4: Robust Method to compute homography</h2>
+
+<p>
+  Next we used a 4-point robust method (RANSAC) to compute a homography for the points we've detected and matched. 
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="new-results/2_NEWransac_bridge0.png" align="middle" width="300px"/>
+        <figcaption align="middle">bridge0 with ransac pts</figcaption>
+      </td>
+      <td>
+        <img src="new-results/2_NEWransac_bridge1.png" align="middle" width="300px"/>
+        <figcaption align="middle">bridge0 with ransac pts</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2> 👀 Part 5: Create the final mosaic!</h2>
+
+<p>
+  Finally, we can create our autogenerated mosaic! 
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="new-results/bridge_morphed.png" align="middle" width="600px"/>
+        <figcaption align="middle">final bridge!</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  For reference, here was my first version from part A.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/bridge_blended_final.png" align="middle" width="600px" />
+        <figcaption align="middle">part a bridge </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Now for the other mosaics: My bedroom</h3>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/bedroom0.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">bedroom0</figcaption>
+      </td>
+      <td>
+        <img src="images/bedroom1.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">bedroom1</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="new-results/room_warpedfinal.png" align="middle" width="600px" />
+        <figcaption align="middle">final auto warped bedroom! </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>For reference, here's my bedroom from part A</p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/bedroom_warped1.png" align="middle" width="400px"/>
+        <figcaption align="middle">bedroom warped part a</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Finally: My living room</h3>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/room2.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">livingroom0</figcaption>
+      </td>
+      <td>
+        <img src="images/room1.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">livingroom1</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="new-results/livingroomfinal.png" align="middle" width="600px" />
+        <figcaption align="middle">final auto warped living room </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>For reference, here's my bedroom from part A</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/rooms_warped_2.png" align="middle" width="500px"/>
+        <figcaption align="middle">living room part a</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2> What I learned/Enjoyed</h2>
+
+<p>
+    It was SO COOL seeing the final result, I love how it's perfect, like entirely perfect. I would love to learn how to do 
+    the bells and whistles, but alas, another day :') I did really enjoy learning how to do the feature matching, I've done clustering 
+    for other applications in the past but never for an image. I like that everything is really tangible and learning how to 
+    intuitively understand whether the algorithm is working correctly.
+</p>
+
+
+</div>
 
 
 </body>
