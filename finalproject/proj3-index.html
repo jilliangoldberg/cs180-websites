@@ -1,0 +1,159 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="center">
+        <h1>CS180 Final Project - Fall 2023</h1>
+        <h1 id="larger">Lightfield Camera 📷</h1>
+        <p>by: Kelly Hu and Jillian Goldberg</p>
+		<br>
+        <div id="row-buttons">
+            <a href='index.html'><button>Gradient Domain</button></a>
+            <a href='proj2-index.html'><button>Image Quilting</button></a>
+            <a href='proj3-index.html'><button disabled>Lightfield Camera</button></a>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+
+    <h2>Part 1: Depth Refocusing</h2>
+
+    <p>To implement depth refocusing, we take into account that faraway objects dont move as significantly with varying 
+      camera angles than more near objects. For example, if we simply take the average of the images, the faraway objects
+      will be more in focus than the near objects. To show focus on each part of the image at a time, we can use the 17x17
+      grid that they specify in the image filenames and use those to calculate a shift to the middle image, which lies at 
+      <code>(8,8)</code>. Then, we can use a scale to scale the image. A scale of 0 means we don't shift the images at all,
+      resulting in focus on the farther object. Contrastingly, shifting with a higher scale (such as 3), will allow for the 
+      image to focus on the near objects. Here are the results!
+    </p>
+
+    <h4>Chess!</h4>
+    <p>
+      For chess, averaging together naively focuses on the back of the chessboard. I found
+      that a scale ranging from <code>[0, 3.4]</code> with increments of .2 worked best.
+    </p>
+    <div id="center">
+      <div id="fit-row">
+        <div>
+          <img src="proj3-lightfield/results/chess-depth/chess_depth.gif" id="figure" />
+          <figcaption align="middle">chess depth refocusing</figcaption >
+        </div>
+      </div>
+    </div>
+
+    <h4>Jellybeans!</h4>
+    <p>
+      For the jellybeans, averaging together naively actually focuses on the front jellybeans, 
+      and this is due to the way that they tilted the camera up, down, left, and right in a 17x17 grid
+      instead of moving the physical location. I ended up using a scale range of 
+      <code>[0, -5]</code> with increments of .5. 
+    </p>
+    <div id="center">
+      <div id="fit-row">
+        <div>
+          <img src="proj3-lightfield/results/jellybeans-depth/jellybean_depth.gif" id="figure" />
+          <figcaption align="middle">jellybeans depth refocusing</figcaption >
+        </div>
+      </div>
+    </div>
+
+    <br><br>
+
+    <h2>Part 2: Aperture Adjustment</h2>
+
+    <p>Next, we worked on changing the aperature as a different method of focusing. 
+      Averaging a large number of images sampled mimics a camera with a large aperature, while 
+      fewer images resulted in a mimic of a smaller aperature. I accomplished this by using 
+      a <code>radius</code> to determine how many images around the center image <code>(8,8)</code>
+      to include in the averaging. Here are the results!
+    </p>
+
+    <h4>Chess!</h4>
+    <p>
+      I set the radius to a range of <code>[0, 8]</code> with increments of .5 
+      to go from only including the middle photo to including the entire 17x17 grid.
+    </p>
+    <div id="center">
+      <div id="fit-row">
+        <div>
+          <img src="proj3-lightfield/results/chess-aperature/chess_aperature.gif" id="figure" />
+          <figcaption align="middle">chess aperature</figcaption >
+        </div>
+      </div>
+    </div>
+
+    <p>
+      I also generated an aperature adjustment focusing on the middle of the chessboard, like 
+      in the example on the website. I accomplished this by adding in functionality from the firt 
+      part of this project, depth refocusing the image to the middle as it increases the radius.
+    </p>
+    <div id="center">
+      <div id="fit-row">
+        <div>
+          <img src="proj3-lightfield/results/chess-aperature/chess_aperature_scaled1.5.gif" id="figure" />
+          <figcaption align="middle">chess aperature middle focus</figcaption >
+        </div>
+      </div>
+    </div>
+
+
+    <h4>Jellybeans!</h4>
+    <p>
+      Just like chess, I set the radius to a range of <code>[0, 8]</code> with increments of .5.
+      Like mentioned before, the jellybeans focus on the front because of how the camera was moved.
+    </p>
+    <div id="center">
+      <div id="fit-row">
+        <div>
+          <img src="proj3-lightfield/results/jellybeans-aperature/jellybean_aperature.gif" id="figure" />
+          <figcaption align="middle">jellybeans aperature</figcaption >
+        </div>
+      </div>
+    </div>
+
+    <h2>Bells & Whistle!</h2>
+
+    <h3>Interactive Refocusing</h3>
+
+    <p>
+      I wanted to implement interactive refocusing because I thought it would be a cool feature to 
+      build, especially since it seems like we already figureed out the hard part! I used the 17x17 
+      grid system to create my interactive focusing. I accomplished this by having a <code>ginput</code>
+      from the user and converting the <code>(x,y)</code> coordinates to the 17x17 coordinate system. 
+      Then, I used the converted x and y coordinates to calculate the new scale factor.
+    </p>
+    <p>
+      Here are the results!
+    </p>
+
+    <div id="row">
+      <div id="img-contain">
+        <img src="proj3-lightfield/results/bellswhistles/chess_clickbackleft.png" id="figure" />
+        <figcaption>click left back</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj3-lightfield/results/bellswhistles/chess_clickfrontright.png" id="figure" />
+        <figcaption>click right front</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj3-lightfield/results/bellswhistles/chess_clickmiddle.png" id="figure" />
+        <figcaption>click middle</figcaption>
+    </div>
+  </div>
+
+
+    <br><br><br>
+    <hr>
+    <div id="center">
+      <br>
+      <div id="row-buttons">
+          <a href='index.html'><button>Gradient Domain</button></a>
+          <a href='proj2-index.html'><button>Image Quilting</button></a>
+          <a href='proj3-index.html'><button disabled>Lightfield Camera</button></a>
+      </div>
+  </div>
+  </body>
+</html>

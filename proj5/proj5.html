@@ -1,0 +1,415 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 5: Neural Radiance Field! (NeRFs!) </title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+<body>
+<h1 align="middle">CCS 180 Project 5: Neural Radiance Field! (NeRFs!) 📸 </h1>
+<h2 align="middle">👩🏻‍💻 Jillian Goldberg - Fall 2023&nbsp; </span></h2>
+<br><br>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part2/2.5truck.gif" align="middle" width="300px"/>
+        <figcaption align="middle">wow very exciting</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div>
+<h2 align="middle">📝 Overview</h2>
+<p>
+The goal of this assignment is to learn how to implement both 2D neural fields and 3D
+ Neural Radiance Fields. 
+</p>
+
+<h2> 📍 Part 1: Fit a Neural Field to a 2D Image </h2>
+<p>
+    In this first section, we implemented a multi-layer perceptron (MLP) with sinusoidal positional
+    encoding (PE) to take in 2-dims and output 3-dims. Then we implemented a Dataloader class that randomly
+    samples N pixels every iteration and then outputs Nx2 2D coords and Nx3 colors of the pixels.
+    Next, we implemented a Loss Function, optimizer, and metric to train the model. We used mean squared error
+    error as our loss function, and Adam as our optimizer. We also used PSNR as our metric. Finally, we
+    did hyperparameter tuning to find the best learning rate and number of layers.
+    <br>
+    <br>
+    I chose the following hyperparameters:
+</p>
+<li>Learning Rate: 0.001</li>
+<li>Batch Size: 10,000</li>
+<li>Epochs: 10</li>
+<li>Hidden Layers: 5</li>
+<li>Highest L: 10</li>
+<li>Hidden Neurons: 256</li>
+
+<p>
+  The first photo on both examples was just a gray box, I omitted for organization.
+</p>
+
+<h3>The Fox</h3>
+<p>
+    Here is the final result on the fox, with 5 hidden layers:
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/part1/fox-0.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox beginning</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/fox-1.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox iteration 200</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/fox-3.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox iteration 300</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/fox-5.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox iteration 400</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="results/part1/fox-7.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox iteration 500</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/fox-9.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox iteration 600</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/fox-11.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox iteration 700</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/fox-13.png" align="middle" width="250px"/>
+        <figcaption align="middle">fox final</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part1/fox_psnr.png" align="middle" width="500px"/>
+        <figcaption align="middle">fox psnr</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h4>Parameter testing: L=10, 3 hidden layers, 256 neurons</h4>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/part1/fox-4L-0.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-4L-1.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-4L-2.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-4L-3.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-4L-4.png" align="middle" width="125px"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h4>Parameter testing: L=10, 3 hidden layers, 32 neurons</h4>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/part1/fox-hidden32-0.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-hidden32-1.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-hidden32-2.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-hidden32-3.png" align="middle" width="125px"/>
+      </td>
+      <td>
+        <img src="results/part1/fox-hidden32-4.png" align="middle" width="125px"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+
+<h3>My Mom and Ahbu</h3>
+<p>
+    Here is the final result on the picture of my Mom and Ahbu:
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/part1/ma-0.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu beginning</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/ma-1.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu iteration 200</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/ma-3.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu iteration 300</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/ma-5.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu iteration 400</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="results/part1/ma-7.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu iteration 500</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/ma-9.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu iteration 600</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/ma-11.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu iteration 700</figcaption>
+      </td>
+      <td>
+        <img src="results/part1/ma-13.png" align="middle" width="250px"/>
+        <figcaption align="middle">mom ahbu final</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part1/ma_psnr.png" align="middle" width="500px"/>
+        <figcaption align="middle">mom psnr</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h2>🌟 Part 2: Fit a Neural Radiance Field from Multi-view Images </h2>
+<p> 
+  Next, we used a neural <i>radiance</i> field to represent a 3D scene. We can use inverse rendering from
+  multiple views to fit a neural radiance field.
+</p>
+
+<h3>Part 2.1: Create Rays from Cameras</h3>
+
+<p>
+  To achieve this part, we created camera to world coordinate conversion 
+  by coding a function called <code>transform(c2w, x_c) </code>
+  and ensured that the implementation was correct by checking 
+  <code>x == transform(c2w.inv(), transform(c2w, x))</code>. 
+  We achieved this by using this equation:
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/website/2.1.png" align="middle" width="200px"/>
+        <figcaption align="middle">camera to world conversion</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  We also created a pixel to camera coordinate 
+  conversion using an intrinsic matrix K and a pixel projection equation:
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/website/k.png" align="middle" width="150px"/>
+        <figcaption align="middle">K matrix</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="results/website/2.1pix.png" align="middle" width="150px"/>
+        <figcaption align="middle">pixel projection</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  We can then use these two functions to create rays from cameras by
+  implementing <code>ray_o, ray_d = pixel_to_ray(K, c2w, uv)</code>.
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/website/2.1rays.png" align="middle" width="150px"/>
+        <figcaption align="middle">pixel to ray</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Part 2.2: Sampling</h3>
+<p> 
+  Next, we implemented sampling rays from images and 
+  sampling points along the rays. I did this by sampling 32 images and then 
+  taking N//32 samples from each image. 
+</p>
+
+<h3>Part 2.3: Putting the Dataloading All Together</h3>
+<p> 
+  Next, we implemented a dataloader that takes in a list of images and 
+  a list of cameras and outputs a batch of rays and colors. We needed to 
+  verify our implementation with the code given to us. Here is my visualization:
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part2/2.3finalview.png" align="middle" width="500px"/>
+        <figcaption align="middle">cameras, rays, and samples</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Part 2.4: Neural Radiance Field </h3>
+<p>
+  Now, we need to create a network to predict the color and density 
+  for the samples in 3D using an MLP like in Part 1. I ended up choosing
+  a learning rate of 
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/website/2.4network.png" align="middle" width="600px"/>
+        <figcaption align="middle">neural radiance field network structure</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Part 2.5: Volume Rendering</h3>
+
+<p>
+  Now we can put it all together by implementing volume rendering. This 
+  means that at every small step along the ray, we can add a small interval 
+  to the final color. We verified this functionality with staff code as well.
+  I chose to do 1000 gradient steps and a batchsize of 10K rays per gradent step, 
+  like the staff solution had as well.
+</p>
+
+<p>
+  And here is my process of rendering the final image in 3 phases:
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part2/2.5_truck-0.png" align="middle" width="300px"/>
+        <figcaption align="middle">truck bad</figcaption>
+      </td>
+      <td>
+        <img src="results/part2/2.5_truck-1.png" align="middle" width="300px"/>
+        <figcaption align="middle">truck slightly less bad</figcaption>
+      </td>
+      <td>
+        <img src="results/part2/2.5_truck-2.png" align="middle" width="300px"/>
+        <figcaption align="middle">truck kinda okay!</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  Here is the PSNRs for the truck:
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part2/2.5psnrs.png" align="middle" width="400px"/>
+        <figcaption align="middle">truck psnrs</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  And here is a lovely gif for your enjoyment, 
+  trained for around 1.5 hours:
+</p>
+
+<div align="middle">
+  <table>
+    <tr>
+      <td>
+        <img src="results/part2/2.5truck.gif" align="middle" width="400px"/>
+        <figcaption align="middle">final truck gif</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

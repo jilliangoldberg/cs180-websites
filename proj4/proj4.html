@@ -1,0 +1,265 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 4a: Image Warping and Mosaicing</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+<body>
+<h1 align="middle">CS 180 Project 4a: Image Warping and Mosaicing 📸 🌅 </h1>
+<h2 align="middle">👩🏻‍💻 Jillian Goldberg - Fall 2023&nbsp; </span></h2>
+<br><br>
+
+
+<div>
+<h2 align="middle">📝 Overview</h2>
+<p>
+The goal of this assignment is to learn image mosaicing by taking two or more photographs
+and creating an image mosaic by registering, projective warping, resampling, 
+and compositing them. This includes computing homographies and using them to warp images.
+</p>
+
+<h2> 📍 Part 1: Shoot and Digitize Photos </h2>
+<p>
+    First, I took the photos. I got to see a really nice sunset with the bay bridge,
+    so I knew I wanted to use that!
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/bridge4.jpg" align="middle" width="350px"/>
+        <figcaption align="middle">bridge0</figcaption>
+      </td>
+      <td>
+        <img src="images/bridge2.jpg" align="middle" width="350px"/>
+        <figcaption align="middle">bridge1</figcaption>
+      </td>
+      <td>
+        <img src="images/bridge1.jpg" align="middle" width="350px"/>
+        <figcaption align="middle">bridge2</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2>🌟 Part 2: Recover Homographies </h2>
+<p> Next, we need to recover the parameters of the transformation between each pair of 
+  images. This is done by solving p’=Hp, where H is a 3x3 matrix with 8 degrees of freedom. 
+  I achieved this by implementing the function <code>H = computeH(im1_pts,im2_pts)</code>. I also 
+used a patching function to adjust the points to each other.</p>
+
+<p>
+  To achieve this, we selected corresponding points to connect each of the three photos.
+</p>
+
+<div align="middle">
+<table style="width=100%">
+  <tr>
+    <td>
+      <img src="results/points01.png" align="middle" width="500px"/>
+      <figcaption align="middle">bridge0 to bridge1</figcaption>
+    </td>
+    <td>
+      <img src="results/points10.png" align="middle" width="500px"/>
+      <figcaption align="middle">bridge1 to bridge0</figcaption>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="results/points12.png" align="middle" width="500px"/>
+      <figcaption align="middle">bridge1 to bridge2</figcaption>
+    </td>
+    <td>
+      <img src="results/points21.png" align="middle" width="500px"/>
+      <figcaption align="middle">bridge2 to bridge1</figcaption>
+    </td>
+  </tr>
+</table>
+</div>
+
+<h2>🎬 Part 3: Warp Images </h2>
+<p> 
+  Next, we needed to warp the images to correspond to each other, which we can do with the H that we previously calcuated.
+  We make a <code>imwarped = warpImage(im,H)</code> function to achieve this. The blue dot is to show the midpoint calculated
+  between the left and middle photo, and the red is for the middle and right photo.
+</p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/warped_attempt2.png" align="middle" width="1000px"/>
+        <figcaption align="middle">ta da! </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  We can demonstrate this on a more simple example. Here are two photos I took.
+</p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/handsposter.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">hands poster normal </figcaption>
+      </td>
+      <td>
+        <img src="images/bostonposter.jpg" align="middle" width="300px"/>
+        <figcaption align="middle">boston poster normal </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>Now, we can use a homography to warp these images into a front-facing view.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/handsposter_rect.png" align="middle" width="500px"/>
+        <figcaption align="middle">hands poster rectified </figcaption>
+      </td>
+      <td>
+        <img src="results/bostonposter_rect.png" align="middle" width="500px"/>
+        <figcaption align="middle">boston poster rectified </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h2>🌎 Part 4: Blend Images into a Mosaic </h2>
+<h3> 4.1 The Bay Bridge</h3>
+<p>
+    My first mosaic was the one I used to build this whole project! I had many, many trials....
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="results/bridge_BETTER.png" align="middle" width="600px" />
+          <figcaption align="middle">first attempt </figcaption>
+        </td>
+      </tr>
+    </table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/bridge_blended_BETTER.png" align="middle" width="600px" />
+        <figcaption align="middle">getting better... </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="results/bridge_blended_final.png" align="middle" width="1000px" />
+        <figcaption align="middle">there we go! </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3> 4.2 My bedroom</h3>
+<p> 
+  Since we needed 3 mosaics, I chose to do my bedroom next.
+</p>
+
+ <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/bedroom0.jpg" align="middle" width="300px"/>
+          <figcaption align="middle">bedroom0</figcaption>
+        </td>
+        <td>
+          <img src="images/bedroom1.jpg" align="middle" width="300px"/>
+          <figcaption align="middle">bedroom1</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="results/bedroom_warped1.png" align="middle" width="800px"/>
+          <figcaption align="middle">bedroom warped</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+<h3> 4.3 My living room</h3>
+<p> 
+  For the 3rd mosaic, I chose to do my living room.
+</p>
+
+ <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/room2.jpg" align="middle" width="300px"/>
+          <figcaption align="middle">livingroom0</figcaption>
+        </td>
+        <td>
+          <img src="images/room1.jpg" align="middle" width="300px"/>
+          <figcaption align="middle">livingroom1</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="results/rooms_warped_2.png" align="middle" width="600px"/>
+          <figcaption align="middle">living room warped</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+<h2> 🫠 Part 5: Tell us what you've learned</h2>
+
+<p>
+    I really enjoyed learning how to warp the images together! I've never learned
+    about homographies or image warping before, so it was exciting to learn something
+    new to make images match up with each other. I'm looking forward to part 2.
+</p>
+
+<h3>To be continued in part b! :)</h3>
+
+
+</body>
+</html>

@@ -1,0 +1,564 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 3: Face Morphing</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+<body>
+<h1 align="middle">CS 180 Project 3: Face Morphing 🥸 🎭 🌝</h1>
+<h2 align="middle">👩🏻‍💻 Jillian Goldberg - Fall 2023&nbsp; </span></h2>
+<br><br>
+<img src="jamian2.gif" style="display: block; margin: 0 auto;" width="250px"/>
+<figcaption align="middle">learn how to do this! :D</figcaption>
+<br><br>
+
+<div>
+<h2 align="middle">📝 Overview</h2>
+<p>
+The goal of this assignment is to produce a morphing animation of 2 faces, 
+compute the mean of a population of faces, and extrapolate from a population subset
+mean to create a caricature of ourselves and others. We went through topics such as
+triangulation, affine transformations, polygons, and average morphing. 
+</p>
+
+<h2> 📍 Part 1: Defining Correspondence </h2>
+<p>
+    First, I had to define the points I wanted to match on each of the images.
+    I chose 35 points to outline the face, eyes, nose, mouth, neck, and shoulders.
+    This part was very tedious to figure out.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/jillian.png" align="middle" width="200px"/>
+        <figcaption align="middle">original image of jillian </figcaption>
+      </td>
+      <td>
+        <img src="images/james.png" align="middle" width="200px"/>
+        <figcaption align="middle">original image of james </figcaption>
+      </td>
+
+    </tr>
+  </table>
+</div>
+
+<p>
+    I eventually drew on the image of me to keep track of all the points I selected:
+</p>
+
+<div>
+    <img src="images/jill_numberedpoints.png" style="display: block; margin: 0 auto;" width="250px"/>
+    <figcaption align="middle">jillian with points numbered</figcaption>
+</div>
+
+<p>
+    First, I selected points on each face.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/jill_points.png" align="middle" width="245px"/>
+        <figcaption align="middle">jillian with selected points</figcaption>
+      </td>
+      <td>
+        <img src="images/james_points.png" align="middle" width="255px"/>
+        <figcaption align="middle">james with selected points</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+    Then, I computed the average points and applied Delauney triangulation.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/jill_avgpoints.png" align="middle" width="260px"/>
+        <figcaption align="middle">jillian with avg points</figcaption>
+      </td>
+      <td>
+        <img src="images/jill_triangles_avg.png" align="middle" width="245px"/>
+        <figcaption align="middle">jillian with avg triangulation</figcaption>
+      </td>
+      <td>
+        <img src="images/james_avgpoints.png" align="middle" width="260px"/>
+        <figcaption align="middle">james with avg points</figcaption>
+      </td>
+      <td>
+        <img src="images/james_triangles_avg.png" align="middle" width="260px"/>
+        <figcaption align="middle">james with avg triangulation</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2>🌟 Part 2: Computing the "Mid-way Face" </h2>
+<p> Now that I found the average of the two faces with my selected points,
+    I can compute a mid-way face by warping both faces into the average shape and averaging
+    the colors together. I achieved this by implementing the function 
+    <code>compute_affine(tri1_pts,tri2_pts)</code>. We can first look at the original photos and 
+    their respective mid-way faces before combining them.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/jillian.png" align="middle" width="200px" />
+        <figcaption align="middle">jillian original </figcaption>
+      </td>
+      <td>
+        <img src="images/james.png" align="middle" width="200px" />
+        <figcaption align="middle">james original </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/2jill_midwayface.png" align="middle" width="308px" />
+          <figcaption align="middle">jillian's mid-way average face </figcaption>
+        </td>
+        <td>
+          <img src="images/2james_midwayface.png" align="middle" width="300px" />
+          <figcaption align="middle">james' mid-way average face </figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    Now, we can see what we look like combined!
+  </p>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/2jamian_midwayface.png" align="middle" width="308px" />
+          <figcaption align="middle">jamian midway face </figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    One challenge I found with this step was the hair. Since we were also finding the mid-way point of colors,
+    the hair naturally doesn't line up and ends up finding the average with the wall. 
+  </p>
+
+
+<h2>🎬 Part 3: The Morph Sequence </h2>
+<p> At last, we have reached the morph sequence! This step was particularly fun, because we got to generate
+    a gif showing the progression of morphing into another face. We can use the equations:
+    <code>avg_pts = warp_frac * (im2_pts - im1_pts) + im1_pts</code> and 
+    <code>final_pts = dissolve_frac*(im2_out - im1_out) + im1_out</code>. Using <code>warp_frac</code>
+    and <code>dissolve_frac</code>, we can adjust each of these by factors of 1/45 to create a 45-image
+    sequence.</p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="jamian2.gif" align="middle" width="250px"/>
+        <figcaption align="middle">ta da! </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2>🌎 Part 4: The "Mean face" of a population </h2>
+<h3> 4.1 The mean face of population</h3>
+<p>
+    Now that we've learned how to to all this, we can generalize it to an entire population. We have a 
+    dataset of 40 Danish faces, so I chose to compute the average happy face in the set, using both males
+    and females for this part. Here are our 3 test subjects that I will show as examples:
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4example12.png" align="middle" width="300px" />
+          <figcaption align="middle">12 original </figcaption>
+        </td>
+        <td>
+          <img src="images/4example21.png" align="middle" width="300px" />
+          <figcaption align="middle">21 original </figcaption>
+        </td>
+        <td>
+            <img src="images/4example34.png" align="middle" width="300px" />
+            <figcaption align="middle">34 original </figcaption>
+          </td>
+      </tr>
+    </table>
+</div>
+
+<p>
+    First, I calculated the average points of all 40 faces and visualized them here with the triangulation.
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4example12_points.png" align="middle" width="250px" />
+          <figcaption align="middle">12 with avg points </figcaption>
+        </td>
+        <td>
+          <img src="images/4example21_points.png" align="middle" width="250px" />
+          <figcaption align="middle">21 with avg points </figcaption>
+        </td>
+        <td>
+            <img src="images/4example34_points.png" align="middle" width="250px" />
+            <figcaption align="middle">34 with avg points </figcaption>
+          </td>
+      </tr>
+      <tr>
+        <td>
+          <img src="images/4example12_triangles.png" align="middle" width="250px" />
+          <figcaption align="middle">12 with triangulation </figcaption>
+        </td>
+        <td>
+          <img src="images/4example21_triangles.png" align="middle" width="250px" />
+          <figcaption align="middle">21 with triangulation </figcaption>
+        </td>
+        <td>
+            <img src="images/4example34_triangles.png" align="middle" width="250px" />
+            <figcaption align="middle">34 with triangulation </figcaption>
+          </td>
+      </tr>
+    </table>
+</div>
+
+<p>
+    Now, we can morph each face into the average shape. They look a lil goofy ngl...
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4example12_morphed.png" align="middle" width="300px" />
+          <figcaption align="middle">12 original </figcaption>
+        </td>
+        <td>
+          <img src="images/4example21_morphed.png" align="middle" width="300px" />
+          <figcaption align="middle">21 original </figcaption>
+        </td>
+        <td>
+            <img src="images/4example34_morphed.png" align="middle" width="300px" />
+            <figcaption align="middle">34 original </figcaption>
+          </td>
+      </tr>
+    </table>
+</div>
+
+<p>
+    Finally, that brings us to the mean face of the entire population. To counteract the blur around the face,
+    I added 4 points to the corners of the image. Hopefully this helped to make the photo less blurry. We can very
+    clearly see the average face and it does in fact look very average!
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4average_face.png" align="middle" width="400px" />
+          <figcaption align="middle">12 original </figcaption>
+        </td>
+      </tr>
+    </table>
+</div>
+
+<h3> 4.2 My Face vs The Mean Face</h3>
+<p> I also warped my face into the average face, and the average face into my face. One bug I ran into for a long time was
+    that when I loaded my own face in, I forgot that I made my <code>get_points()</code> function to automatically add the 
+    corner points, which resulted in some weird results.
+</p>
+
+<p> To create a caricature of my face, I first find the caricature shape by interpolation.
+  I subtracted the average points from my own image points and then add the difference back
+  to my own image points in order to interpolate and create the caricature shape. After that,
+  I computed the affine matrices from my image points to the caricatured points and warp my
+  image to the shape in order to create the caricature of myself. We can see that since in
+  the original image of my face, my eyes and nose are larger than the mean face, those features
+  become more significant in the caricatured face. 
+ </p>
+
+ <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/jillian_cropped_h.png" align="middle" width="300px"/>
+          <figcaption align="middle">My Face</figcaption>
+        </td>
+        <td>
+          <img src="images/4average_face.png" align="middle" width="380px"/>
+          <figcaption align="middle">Mean Face</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+<p>
+    I had to label the points again – this was very tedious, but I ended up automating the process by using <code>plt.imshow()</code>
+    on every single point in order, and generated tons of images.
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4man_numberedpoints.jpeg" align="middle" width="350px"/>
+          <figcaption align="middle">man wth 61 numbered points</figcaption>
+        </td>
+        <td>
+          <img src="images/4jillian_points.png" align="middle" width="350px"/>
+          <figcaption align="middle">my face with points</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    And here are the final results!
+  </p>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4me_to_avg.png" align="middle" width="350px"/>
+          <figcaption align="middle">me to average face</figcaption>
+        </td>
+        <td>
+          <img src="images/4javg_to_me.png" align="middle" width="350px"/>
+          <figcaption align="middle">average face to me</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    The conclusion is that it seems my face is just very smushed inward.
+    I would look kinda weird if I were Danish... here are some of my failures, just for entertainent:
+  </p>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/4jillian_warpFAIL.png" align="middle" width="350px"/>
+          <figcaption align="middle">me to average face</figcaption>
+        </td>
+        <td>
+          <img src="images/4avgtojill_warpFAIL.png" align="middle" width="350px"/>
+          <figcaption align="middle">average face to me</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+<h2> 🫠 Part 5: Caricatures: Extrapolating from the mean</h2>
+
+<p>
+    Now, I can produce caricatures of my face now that I have the population means.
+    I used the population mean and changed the alpha value to compute a warped version of myself.
+</p>
+
+<h3>Me with alpha 2.5</h3>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/5jillian_caricature2.5.png" align="middle" width="400px"/>
+        <figcaption align="middle">morphing with a=2.5</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Me with the average female face shape</h3>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/5female_avgface.png" align="middle" width="400px"/>
+        <figcaption align="middle">the average female face</figcaption>
+      </td>
+      <td>
+        <img src="images/5jillian_female_normal.png" align="middle" width="400px"/>
+        <figcaption align="middle">me with the average female face</figcaption>
+      </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="images/5jillian_female_caricature.png" align="middle" width="400px"/>
+            <figcaption align="middle">me as female cariacature a=1.5</figcaption>
+          </td>
+          <td>
+            <img src="images/5jillian_female_caricature2.png" align="middle" width="400px"/>
+            <figcaption align="middle">me as female cariacature a=2.5</figcaption>
+          </td>
+    </tr>
+  </table>
+</div>
+
+<h2>🔔 Bells and Whistles: Caricatures: Extrapolating from the mean</h2>
+
+<h3>1. Change the gender of me</h3>
+
+<p>
+    The first bells and whistles that I chose to do is the gender swap.
+    I took the average male face and found the shape and morphed one of 
+    the males to the shape as an example. Then, I morphed myself to the shape.
+    Finally, I took the average of me and the average male to make myself 
+    kinda male. 
+    I just realized the spec says that you don't have to compute the average again ourselves –
+    wish I saw that before this haha.
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/BWmale_shape.png" align="middle" width="400px"/>
+          <figcaption align="middle">the average male face</figcaption>
+        </td>
+        <td>
+          <img src="images/BWaverage_male_face.png" align="middle" width="400px"/>
+          <figcaption align="middle">the average male face</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+            <img src="images/BWjillian_asman.png" align="middle" width="450px"/>
+            <figcaption align="middle">jillian as male!</figcaption>
+          </td>
+      </tr>
+    </table>
+  </div>
+
+  <p> Not sure if I'd date myself if I'm being honesty... good thing I'm a girl!</p>
+
+  <h3>2. Making a Morphing Music Video!</h3>
+
+  <p>
+      For my last bells and whistles, I made 
+      <a href="https://youtu.be/90lyXJXvL_4">a morphing video</a>
+      of myself across the ages with 5 different pictures. 
+      Made me v nostalgic :') 
+      Here are the original photos and I also tested the average photos if you are curious:
+  </p>
+  
+  <div align="middle">
+      <table style="width=100%">
+        <tr>
+          <td>
+            <img src="images/BWjillian1.jpg" align="middle" width="200px"/>
+            <figcaption align="middle">baby jilly</figcaption>
+          </td>
+          <td>
+            <img src="images/BWjillian2.jpg" align="middle" width="200px"/>
+            <figcaption align="middle">lil</figcaption>
+          </td>
+          <td>
+              <img src="images/BWjillian3.jpg" align="middle" width="200px"/>
+              <figcaption align="middle">child</figcaption>
+            </td>
+            <td>
+              <img src="images/BWjillian4.jpg" align="middle" width="200px"/>
+              <figcaption align="middle">older</figcaption>
+            </td>
+            <td>
+              <img src="images/BWjillian5.jpg" align="middle" width="200px"/>
+              <figcaption align="middle">old!</figcaption>
+            </td>
+        </tr>
+      </table>
+    </div>
+  
+  <div align="middle">
+      <table style="width=100%">
+        <tr>
+          <td>
+            <img src="images/BWjill12_avg.png" align="middle" width="250px"/>
+            <figcaption align="middle">1 to 2</figcaption>
+          </td>
+          <td>
+            <img src="images/BWjill23_avg.png" align="middle" width="250px"/>
+            <figcaption align="middle">2 to 3</figcaption>
+          </td>
+          <td>
+              <img src="images/BWjill34_avg.png" align="middle" width="250px"/>
+              <figcaption align="middle">3 to 4</figcaption>
+            </td>
+            <td>
+              <img src="images/BWjill45_avg.png" align="middle" width="250px"/>
+              <figcaption align="middle">4 to 5</figcaption>
+            </td>
+        </tr>
+      </table>
+    </div>
+
+<h3>3. Non-linear caricature!</h3>
+
+<p>
+    I experimented with a swirl caricature instead, on my own face and the average population face.
+</p>
+
+<div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/BWswirl_me.png" align="middle" width="400px"/>
+          <figcaption align="middle">swirly jillian</figcaption>
+        </td>
+        <td>
+          <img src="images/BWswirl_avg.png" align="middle" width="400px"/>
+          <figcaption align="middle">swirly average face</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+<p>
+Thank you for looking! I had fun with this project. :)
+</p>
+
+</body>
+</html>

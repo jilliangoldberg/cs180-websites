@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS 180 Project 2: Fun with Filters and Frequencies! </title>
+</head>
+<body>
+    <h1>CS 180 Project 2: Fun with Filters and Frequencies!</h1>
+    <h3>Jillian Goldberg (SID: 3035565792)</h3>
+
+    <h2>Overview</h2>
+    The goal of this project is to use image processing techniques and build intuitions about 2D convolutions and filtering.
+    <br>
+    This includes:
+    Fun with Frequencies
+        <li>1.1 Finite Difference Operator</li>
+        <li>1.2 Derivative of Gaussian (DoG) Filter</li>
+        <li>2.1 Image "Sharpening"</li>
+        <li>2.2 Hybrid Images</li>
+        <li>2.3 Gaussian and Laplacian Stacks</li>
+        <li>2.4 Multiresolution Blending (a.k.a. the oraple!)</li>
+
+
+    <h2>Part 1 Questions</h2> 
+    <b>(15 points) Include a brief description of gradient magnitude computation.</b> <br>
+    The gradient magnitude computation is performed by taking the derivative in the x and y to obtain components
+    <i>dx</i> and <i>dy</i>. Then, we can plut them into this formula: <br>
+    <code>gradient_f  = np.sqrt(f_x^2 + f_y^2)</code>
+
+    <b>(15 points) Answer the questions asked in part 1.2</b> <br>
+    Using the gaussian threshold instead of the finite difference results in much less noise. 
+    This is because the gaussian threshold is able to cut out some of the noise that we saw in part 1.1. <br>
+    The resulting images in part 1.2 are the same. <br>
+    <img src="results/1.1gradient.png" style="width:30%">
+    <img src="results/1.2gaussian.png" style="width:30%">
+
+
+    <h2>Project Points</h2>
+    <b>20 points for the implementation of all four parts of the project.</b> <br>
+    Included in the <code>main.ipynb</code> file. 
+
+
+    <h3>15 points for the Unsharp Masking</h3>
+    <b>taj</b> <br>
+    <img src="images/taj.jpg" style="width:25%">
+    <img src="results/2.1_tajsharp.png" style="width:30%">
+    <br>
+    <b>mom and grandma</b> (blurred then sharpened) <br>
+    <img src="images/momahbu.png" style="width:25%">
+    <img src="results/2.1_momahbublur.png" style="width:25%">
+    <img src="results/2.1_momahbu_sharp.png" style="width:30%">
+
+    <h3>5 points for hybrid images and the Fourier analysis</h3>
+    <i>5 points for including at least two hybrid image examples beyond the first (including at least one failure);</i>
+    <br>
+    <b>nutmeg and derek</b> <br>
+    <img src="images/nutmeg.jpg" style="width:25%">
+    <img src="images/derekpicture.jpg" style="width:20%">
+    <img src="results/2.2nutmeg_derek_155_3015.png" style="width:30%">
+    <br>
+    <b>mom and dad</b> <br>
+    <img src="images/mom.PNG" style="width:25%">
+    <img src="images/dad.PNG" style="width:25%">
+    <img src="results/2.2momdad.png" style="width:30%"> <br>
+    <br>
+    <b>chubs and log</b> <br>
+    <img src="images/chubs.png" style="width:25%">
+    <img src="images/log.png" style="width:20%">
+    <img src="results/2.2chubslog_better.png" style="width:30%">
+    <br>
+    <b>mom and dad (failed)</b> <br>
+    <img src="images/mom.png" style="width:15%">
+    <img src="images/dad.png" style="width:15%">
+    <img src="results/2.2momdad_failedhybrid.png" style="width:25%">
+    <br>
+
+    <b>fourier analysis for chubs and log</b> <br>
+    chubs <br>
+    <img src="results/2.2_fourier_chubs.png" style="width:30%"><br>
+    log <br>
+    <img src="results/2.2_fourier_log.png" style="width:30%"><br>
+    chubs high pass <br>
+    <img src="results/2.2_fourier_chubshighpass.png" style="width:30%"><br>
+    log low pass <br>
+    <img src="results/2.2_fourier_loglowpass.png" style="width:30%">
+    
+
+    <br>
+    <h3>15 points for multiresolution blending:</h3>
+    apple gaussian <br>
+    <img src="results/2.3_apple_gauss.png" style="width:60%"><br>
+    orange gaussian <br>
+    <img src="results/2.3_orange_gauss.png" style="width:60%"><br>
+    apple laplace <br>
+    <img src="results/2.3_apple_laplace.png" style="width:60%"><br>
+    orange laplace <br>
+    <img src="results/2.3_orange_laplace.png" style="width:60%"><br>
+    apple half <br>
+    <img src="results/2.3_applehalf.png" style="width:30%"><br>
+    orange half <br>
+    <img src="results/2.3_orangehalf.png" style="width:30%"><br>
+    <b>blending result</b><br>
+    <img src="results/2.3_orapplev3.png" style="width:40%"><br>
+
+
+    <h3>5 points for including at least two multiresolution blending examples beyond the apple+orange, one of them with an irregular mask.</h3>
+    <b>putting sunglasses on chubs!</b>
+    chubs laplacian<br>
+    <img src="results/2.4_chubs_lap.png" style="width:70%"><br>
+    sunnys laplacian <br>
+    <img src="results/2.4_sunnys_lap.png" style="width:70%"><br>
+    mask gaussian <br>
+    <img src="results/2.4_masky_gauss.png" style="width:70%"><br>
+    <b>final result!</b> <br>
+    <img src="results/2.4_chubsunnysv2.png" style="width:70%"><br>
+
+    <br>
+    thank you for reading! - jillian goldberg
+    <br>
+
+</body>
+</html>

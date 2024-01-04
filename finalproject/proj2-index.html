@@ -1,0 +1,324 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="center">
+		<h1>CS180 Final Project - Fall 2023</h1>
+        <h1 id="larger">Image Quilting 💟</h1>
+        <p>by: Kelly Hu and Jillian Goldberg</p>
+		<br>
+        <div id="row-buttons">
+            <a href='index.html'><button>Gradient Domain</button></a>
+            <a href='proj2-index.html'><button disabled>Image Quilting</button></a>
+            <a href='proj3-index.html'><button>Lightfield Camera</button></a>
+        </div>
+    </div>
+    <br>
+	<hr>
+	<br>
+	<h4>Overview</h4>
+	<p>
+		This project revolves around implementing the image quilting algorithm outlined in the SIGGRAPH 2001 paper by Efros and Freeman. Texture synthesis involves creating a larger texture image from a small sample, while texture transfer imparts an object with the appearance of a given texture while maintaining its basic shape. The core concept is to sample patches and arrange them with overlaps, ensuring similarity in these overlapping regions. Imperfect matches in the overlaps may lead to noticeable edges in the synthesized texture.
+	</p>
+    <br>
+
+    <h1>Part 1: Randomly Sampled Texture </h1>
+
+    <p>The first step was creating a random sampling function <code>quilt_random(sample, out_size, patch_size)</code>
+		that take a small patch from an input image and then uses it as "tiles" to mesh together into a larger image. 
+		This process is random, as observed by the result images.
+    </p>
+	<h4>Original Samples</h4>
+    <div id="row">
+      <div id="img-contain">
+        <img src="proj2-image-quilting/samples/bricks_small.jpg" id="figure" />
+        <figcaption align="middle">brick</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj2-image-quilting/samples/leaf-small.jpeg" id="figure" />
+        <figcaption align="middle">leaf</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj2-image-quilting/samples/text_small.jpg" id="figure" />
+        <figcaption align="middle">text</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj2-image-quilting/samples/radish.jpg" id="figure" />
+        <figcaption align="middle">radishes</figcaption>
+      </div>
+	  <div id="img-contain">
+        <img src="proj2-image-quilting/samples/texture.png"  id="figure" />
+        <figcaption align="middle">wool texture</figcaption>
+      </div>
+    </div>
+
+
+    <h4>Results (out_size = (420, 420), patch_size = 20)</h4>
+    <div id="row">
+      <div>
+        <img src="proj2-image-quilting/results/part1_brick_random.jpg" id="figure" />
+        <figcaption align="middle">brick</figcaption>
+      </div>
+      <div>
+        <img src="proj2-image-quilting/results/part1_leaf_random.jpg" id="figure" />
+        <figcaption align="middle">leaf</figcaption>
+      </div>
+      <div>
+        <img src="proj2-image-quilting/results/part1_text_random.jpg" id="figure" />
+        <figcaption align="middle">text</figcaption>
+      </div>
+      <div>
+        <img src="proj2-image-quilting/results/part1_rad_random.jpg"  id="figure" />
+        <figcaption align="middle">radishes</figcaption>
+      </div>
+	  <div>
+        <img src="proj2-image-quilting/results/part1_texture_random.jpg"  id="figure" />
+        <figcaption align="middle">wool texture</figcaption>
+      </div>
+    </div>
+
+    <br><br>
+
+    <h1>Part 2: Overlapping Patches</h1>
+
+    <p>Next, we created an overlapping patches method, <code>quilt_simple(sample, out_size, patch_size, overlap, tol)</code>, which randomly samples square patches of size 
+		patch_size from a sample in order to create an output image of size out_size. We created two helper functions, <code>ssd_patch(T, M, I)</code> and 
+		<code>choose_sample(cost, tol)</code> to help compute the SSD between a template (T), mask (M), and image (I), for each color channel 
+		and select random indices around the min cost value. With <code>quilt_simple</code>, we can generate a synthesized image made by 
+		iteratively selecting and placing patches into the output image based on min SSD criteria and the overlap param. The final result
+		is a stitched-together "quilt" that minimizes the edge seams more than our first randomly sampled texture results. You can still make out the 
+		seams when looking close up, but it's still an upgrade.
+    </p>
+
+    <h4>Results</h4>
+    <div id="row">
+		<div>
+		  <img src="proj2-image-quilting/results/part2_brick_simple.jpg" id="figure" />
+		  <figcaption align="middle">brick</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part2_leaf_simple.jpg" id="figure" />
+		  <figcaption align="middle">leaf</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part2_text_simple.jpg" id="figure" />
+		  <figcaption align="middle">text</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part2_rad_simple.jpg"  id="figure" />
+		  <figcaption align="middle">radishes</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part2_texture_simple.jpg"  id="figure" />
+		  <figcaption align="middle">wool texture</figcaption>
+		</div>
+	  </div>
+
+    <br><br>
+
+	<h1>Part 3: Seam Finding</h1>
+
+	<p> Now that we have the overlapping patches method, the next step is implementing seam finding to reduce and minimize the apperance
+		of edge artifacts that are common with overlapping patches. Seam finding is employed to mitigate edge artifacts arising from 2 overlapping patches' horizontal and vertical seams. 
+		This process utilizes a min-cost algorithm implemented through dynamic programming. The resulting min-cost path is utilized to generate a mask, determining the pixels to be overlapped.
+    </p>
+	<p>
+		We created the <code>quilt_cut(sample, out_size, patch_size, overlap, tol)</code> method. Within the function, we defined
+		three nested helper functions: <code>create_mask</code> generates a mask for a specified range along a given axis, 
+		<code>update_patch</code> facilitates the updating of patches using a min-cost seam, and <code>process_patches</code> manages the selection
+		 and updating of patches based on the min-cost seam. The algorithm initializes the result image and randomly selects 
+		 an initial patch from the input texture. Masks are then defined for the top, left, and other regions of each patch. 
+		 The function iteratively processes patches in rows and columns, applying seam finding and updating the result image accordingly. 
+		 Ultimately, applying this method returns a better synthesized image, effectively reducing artifacts and enhancing seam blending for a visually cohesive output.
+	</p>
+
+    <h4>Results</h4>
+    <div id="row">
+		<div>
+		  <img src="proj2-image-quilting/results/part3_brick_cut.jpg" id="figure" />
+		  <figcaption align="middle">brick</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part3_leaf_cut.jpg" id="figure" />
+		  <figcaption align="middle">leaf</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part3_text_cut.jpg" id="figure" />
+		  <figcaption align="middle">text</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part3_rad_cut.jpg"  id="figure" />
+		  <figcaption align="middle">radishes</figcaption>
+		</div>
+		<div>
+		  <img src="proj2-image-quilting/results/part3_texture_cut.jpg"  id="figure" />
+		  <figcaption align="middle">wool texture</figcaption>
+		</div>
+	  </div>
+	  <br>
+	  <h4>Zooming into some selected patch</h4>
+	  <p>Here are two sampled patches, where the left patch has already been placed down, and the right patch 
+		has just been chosen by the ssd_patch and choose_sample functions.
+	  </p>
+	  <div id="center"><div id="fit-row">
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/results/placed_patch.png" id="figure" />
+		  <figcaption align="middle">placed patch</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/results/next_patch.png" id="figure" />
+		  <figcaption align="middle">new patch</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/path.png" id="figure" />
+		  <figcaption align="middle">path</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/path-on.png"  id="figure" />
+		  <figcaption align="middle">[min cut result]</figcaption>
+		</div>
+	  </div>
+</div>
+	  
+
+
+
+    <br><br>
+
+	<h1>Part 4: Texture Transfer</h1>
+
+    <p>Lastly, we explored texture_transferring, which leverages the <code>quilt_cut</code> function for facilitating texture 
+		synthesis using a target reference image. For <code>texture_transfer</code>, we take parameters such as the sample, the target/reference image, 
+		and an alpha value for weighting the cost between the SSD of the patch and the target patch from the reference image. 
+		We initialize masks for left, top, and corner, and then iteratively processes patches in rows and columns. 
+		The SSD is computed between the overlapping patches and the corresponding patches from the reference image. 
+		The alpha-weighted sum of these costs is used to guide the selection of new patches, and the min-cost function is applied 
+		to blend these patches seamlessly.
+    </p>
+	<p>
+		The results showcase the effectiveness of the texture transfer process, preserving the desired texture while aligning with the reference image.
+	</p>
+
+    <h4>Result 1: Feynman + sketch texture</h4>
+    <div id="row-more">
+      <div>
+        <img src="proj2-image-quilting/samples/feynman.png" id="figure" />
+        <figcaption align="middle">target object</figcaption>
+      </div>
+      <div>
+        <img src="proj2-image-quilting/samples/sketch.png" id="figure" />
+        <figcaption align="middle">texture goal</figcaption>
+      </div>
+      <div>
+        <img src="proj2-image-quilting/results/part4_man.jpg" id="figure" />
+        <figcaption align="middle">texture transferred</figcaption>
+      </div>
+    </div>
+
+    <br><br>
+
+	<h4>Result 2: Kelly + sketch texture</h4>
+	<div id="row-more">
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/kelly.png" id="figure" />
+		  <figcaption align="middle">target object</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/sunflowers.jpeg" id="figure" />
+		  <figcaption align="middle">texture goal</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/results/part4_monetkelly.jpg" id="figure" />
+		  <figcaption align="middle">texture transferred</figcaption>
+		</div>
+	  </div>
+	  <br><br>
+	  
+	  <h4>Result 3: Toronto skyline + Starry Night texture</h4>
+	  <div id="row">
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/canada.jpeg" id="figure" />
+		  <figcaption align="middle">target object</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/vangogh.jpeg" id="figure" />
+		  <figcaption align="middle">texture goal</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/results/part4_canada.jpg" id="figure" />
+		  <figcaption align="middle">texture transferred</figcaption>
+		</div>
+	  </div>
+	  <br><br>
+
+	  <h4>Result 4: Jillian + watercolor painting texture</h4>
+	  <div id="row">
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/jillian.jpeg" id="figure" />
+		  <figcaption align="middle">target object</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/watercolor.jpeg" id="figure" />
+		  <figcaption align="middle">texture goal</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/results/part4_jillian.png" id="figure" />
+		  <figcaption align="middle">texture transferred</figcaption>
+		</div>
+	  </div>
+	  <br>
+	  <h1>Bells and Whistles: Face-in-toast Tmage</h1>
+	  <p>I was very intrigued by the face in toast image at the top of the project spec, so I knew that I wanted to attempt this task. 
+		In order to approach this, I first started by applying the techniques learned in this image quilting project through applying my 
+		texture transfer function to a sample of toasted bread (provided in the image samples zip). I croppped the toast to eliminate the 
+		white borders such that the texture could be produced properly. After transferring the texture to the target image (the Feynman image),
+		I produced the result below.
+	  </p>
+	  <br>
+	  <div id="row">
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/feynman.png" id="figure" />
+		  <figcaption align="middle">target object</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/toast.jpg" id="figure" />
+		  <figcaption align="middle">texture goal</figcaption>
+		</div>
+		<div id="img-contain">
+		  <img src="proj2-image-quilting/samples/mantoast.png" id="figure" />
+		  <figcaption align="middle">texture transferred</figcaption>
+		</div>
+	  </div>
+	  <br>
+	  <p>After creating the texture transfer, the next step was to blend the man's image onto the toast somehow. To do so, I thought back to 
+		an earlier project where we learned about multiresolution blending and irregular masks. I implemented the <code>convolvecolor</code> function, which performs a 2D convolution on each color channel of an image, the <code>gauss_2d</code> function, which generates a 2D Gaussian filter kernel, 
+		the <code>gauss_stack</code> function, which creates a stack of images with increasing Gaussian blurs, and the <code>lap_stack</code> function, which generates a Laplacian stack by taking the difference between 
+		consecutive images in the Gaussian stack.  Finally, I created an irregular mask in roughly the shape of the previously produced man-on-toast picture, and blended that into the original image of the toast. 
+	  </p>
+	  <p> This produced the following result, which is pretty cool!!
+	  </p>
+	  <div id="center">
+		<div id="fit-row">
+				<div id="img-contain">
+				<img src="proj2-image-quilting/results/man_toast_final.png" id="figure" />
+				<figcaption align="middle">final man on toast!</figcaption>
+				</div>
+			</div>
+	  </div>
+	  
+
+	  <br><br><br>
+    <hr>
+    <div id="center">
+      <br>
+      <div id="row-buttons">
+          <a href='index.html'><button>Gradient Domain</button></a>
+          <a href='proj2-index.html'><button disabled>Image Quilting</button></a>
+          <a href='proj3-index.html'><button>Lightfield Camera</button></a>
+      </div>
+  </div>
+
+  </body>
+</html>

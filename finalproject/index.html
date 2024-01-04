@@ -1,0 +1,408 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="center">
+      <h1>CS180 Final Project - Fall 2023</h1>
+        <h1 id="larger">Gradient Domain Fusion 🐧</h1>
+        <p>by: Kelly Hu and Jillian Goldberg</p>
+		<br>
+        <div id="row-buttons">
+            <a href='index.html'><button disabled>Gradient Domain</button></a>
+            <a href='proj2-index.html'><button>Image Quilting</button></a>
+            <a href='proj3-index.html'><button>Lightfield Camera</button></a>
+        </div>
+    </div>
+    <br>
+	<hr>
+	<br>
+	<h4>Overview</h4>
+	<p>
+		This project delves into gradient-domain processing, a versatile technique applicable to blending, tone-mapping, and non-photorealistic rendering. The primary objective is to achieve seamless blending of an object or texture from a source image into a target image.
+	</p>
+    
+    <br>
+    <h1>Part 1: Toy Problem</h1>
+    <p>The toy problem reconstructs images using gradient-domain processing. 
+      The goal is to reconstruct an image based on its x and y gradients. The problem involves minimizing the 
+      squared diff between x-gradients and y gradients of the reconstructed image <code>'v'</code>) and the source image 
+      (<code>'s'</code>) for every pixel. We also uysed a sparse matrix 
+      to save memory and speed up the processing. Finally, I used 
+      <code>scipy.sparse.linalg.lsqr</code> to solve for <code>v</code>. 
+      To solve, we had 3 main objectives:
+
+        <ol>1. minimize (v(x+1,y)-v(x,y) - (s(x+1,y)-s(x,y)))^2</math></ol>
+        <ol>2. minimize (v(x,y+1)-v(x,y) - (s(x,y+1)-s(x,y)))^2	</ol>
+        <ol>3. minimize (v(1,1)-s(1,1))^2</ol>
+
+    </p>
+
+    <p>Our results after doing this are below.</p>
+
+    <div id="center">
+      <div id="fit-row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/toy_problem.png" id="figure" />
+          <figcaption>reference</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/toy_reconstr.png" id="figure" />
+          <figcaption align="middle">reconstructed</figcaption>
+        </div>
+        </div>
+        <br>
+        <div id="fit-row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/penguin-chick.jpeg" id="figure" />
+          <figcaption align="middle">reference</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/penguin_reconstr.jpeg" id="figure" />
+          <figcaption align="middle">reconstructed</figcaption>
+        </div>
+        </div>
+    </div>
+
+    <p>
+      Here's my naive example when I was testing. :)
+    </p>
+
+    <div id="center">
+      <div id="fit-row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.1tester_reconstructed.png" id="figure" />
+          <figcaption align="middle">original</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.1tester_reconstructed.png" id="figure" />
+          <figcaption align="middle">reconstructed</figcaption>
+        </div>
+        </div>
+      </div>
+    </div>
+
+
+      <br><br>
+
+    <h1>Part 2: Poisson Blending	</h1>
+    <p>Next, we worked on Poisson blending, which depends on this equation. The main idea
+      of this is to minimize the squared difference between the gradients of the target image and the
+      gradients of the source image. We used the same sparse matrix and <code>scipy.sparse.linalg.lsqr</code>
+      to solve for <code>v</code>. After solving for the blending constraints for each pixel using the 
+      equation below, we are able to copy the values into the target image.
+
+    </p>
+
+    <div id="center">
+          <img src="proj1-gradient-domain/results/website_poissonblend_eq.png" id="figure" />
+    </div>
+
+
+    <h4>Result 1: Penguin</h4>
+    <div id="center">
+      <div id="row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/snow-walking.jpg" id="figure" />
+          <figcaption align="middle">target image</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/penguin.jpg" id="figure-small" />
+          <figcaption align="middle">source image</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.2.3penguin_FINALplacement_dec6.png" id="figure" />
+          <figcaption align="middle">placement</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.2.3penguin_FINALmask_dec6.png" id="figure" />
+          <figcaption align="middle">mask</figcaption>
+        </div>
+        </div>
+    </div>
+<br>
+    <div id="center">
+      <div id="fit-row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.2.3penguin_FINALblend_dec6.png" id="figure" />
+          <figcaption align="middle">blended result</figcaption>
+        </div>
+      </div>
+    </div>
+<br>
+
+    <h4>Result 2: Oski</h4>
+    <div id="row">
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/images/minecraft.png" id="figure" />
+        <figcaption align="middle">target image</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/images/oski.jpg" id="figure" />
+        <figcaption align="middle">source image</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/results/2.2.3oski_mask_dec6.png" id="figure" />
+        <figcaption align="middle">mask</figcaption>
+      </div>
+      </div>
+      <br>
+      <div id="center">
+        <div id="fit-row">
+          <div id="img-contain">
+            <img src="proj1-gradient-domain/results/2.2.3oski_FINALblend_dec6.png" id="figure" />
+            <figcaption align="middle">blended result</figcaption>
+          </div>
+        </div>
+      </div>
+  <br>
+
+      <h4>Result 3: Central Park in Snow</h4>
+      <div id="row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/snow.jpeg" id="figure" />
+          <figcaption align="middle">target image</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/penguin-chick.jpeg" id="figure" />
+          <figcaption align="middle">source image</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.2.3chick_mask_dec6.png" id="figure" />
+          <figcaption align="middle">mask</figcaption>
+        </div>
+        </div>
+        <div id="center">
+          <div id="fit-row">
+            <div id="img-contain">
+              <img src="proj1-gradient-domain/results/2.2.3chick_FINALblend_dec6.png" id="figure" />
+              <figcaption align="middle">blended result</figcaption>
+            </div>
+          </div>
+        </div>
+
+    <br>
+    <h4>Failure Case: Pandas on the Glade</h4>
+    <p>
+      The first failure case I had was the weird colors that would project onto the pandas 
+      when blending. They ended up turning pink!
+    </p>
+
+<div id="row">
+  <div id="img-contain">
+    <img src="proj1-gradient-domain/images/glade.png" id="figure" />
+    <figcaption align="middle">target image</figcaption>
+  </div>
+  <div id="img-contain">
+    <img src="proj1-gradient-domain/images/pandas.png" id="figure" />
+    <figcaption align="middle">source image</figcaption>
+  </div>
+  <div id="img-contain">
+    <img src="proj1-gradient-domain/results/2.2.3panda2_mask_dec6.png" id="figure" />
+    <figcaption align="middle">mask</figcaption>
+  </div>
+  </div>
+
+  <div id="center">
+    <div id="fit-row">
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/results/2.2.3panda_FINALblend_pink_dec6.png" id="figure" />
+        <figcaption align="middle">blended result</figcaption>
+      </div>
+    </div>
+  </div>
+      
+    <br>
+    <h4>Failure Case: Harry Potter Clear Boundary</h4>
+    <p>
+      The second failure case was Harry Potter flying on the glade, 
+      where the boundary between the source and target image was very clear. Due 
+      to the more complex shape, especially above the curled legs, the blending was less smooth
+      than my other results. 
+    </p>
+
+<div id="row">
+  <div id="img-contain">
+    <img src="proj1-gradient-domain/images/glade.png" id="figure" />
+    <figcaption align="middle">target image</figcaption>
+  </div>
+  <div id="img-contain">
+    <img src="proj1-gradient-domain/images/harry2.jpg" id="figure" />
+    <figcaption align="middle">source image</figcaption>
+  </div>
+  <div id="img-contain">
+    <img src="proj1-gradient-domain/results/2.2.3harry2_mask_dec6.png" id="figure" />
+    <figcaption align="middle">mask</figcaption>
+  </div>
+  </div>
+<br>
+  <div id="center">
+    <div id="fit-row">
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/results/2.2.3harry2_FINALblend_mid_dec6.png" id="figure" />
+        <figcaption align="middle">blended result</figcaption>
+      </div>
+    </div>
+  </div>
+  <br>
+  <h1>Bells and Whistles: Mixed Gradients </h1>
+    <p>
+      We also implemented mixed gradients in attempt to improve the blending from Poisson through comparing
+      the target and source values. The only change in the Mixed Gradients from Poisson Blending is 
+      <code>d_ij</code>, because it compares the absolute differences: 
+    
+      <li> If <code>abs(s_i-s_j) > abs(t_i-t_j)</code> then we can say <code>d_ij = s_i-s_j</code></li>
+      <li> Otherwise, we can say <code>d_ij = t_i-t_j</code></li>
+    </p>
+    <p>
+    This is reflected in the equation below:
+    </p>
+
+    <div id="center">
+      <img src="proj1-gradient-domain/results/website_textureblend_eq.png" id="figure" />
+    </div>
+
+    <h4>Result 1: Penguin</h4>
+    <p>As seen in our results, the mixed gradients helped with improving the 
+      realism of our pictures and helped them look more natural (note the shadow!).
+    </p>
+
+    <div id="center">
+      <div id="row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/2.2.3chick_FINALblend_dec6.png" id="figure" />
+          <figcaption align="middle">poisson blending</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/bw_mixedgradients_chickFINAL.png" id="figure" />
+          <figcaption align="middle">mixed gradient</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <h4>Result 2: Michael Phelps</h4>
+
+    <div id="row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/water.jpg" id="figure" />
+          <figcaption align="middle">destination</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/images/phelps.jpg" id="figure" />
+          <figcaption align="middle">object</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/bw_mixedgradients_swim2PLACEMENT.png" id="figure" />
+          <figcaption align="middle">placement</figcaption>
+        </div>
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/bw_mixedgradients_swim2MASK.png" id="figure" />
+          <figcaption align="middle">mask</figcaption>
+      </div>
+    </div>
+    
+  <br>
+
+    <div id="center">
+      <div id="fit-row">
+        <div id="img-contain">
+          <img src="proj1-gradient-domain/results/bw_mixedgradients_swim2FINAL.png" id="figure" />
+          <figcaption align="middle">result</figcaption>
+        </div>
+      </div>
+    </div>
+
+
+  <br>
+
+  <h1>Bells and Whistles: Color2Gray</h1>
+
+    <p>
+      I also implemented color2gray, and I really enjoyed this one 
+      because I thought it was such an interesting application of this knowledge! I enjoyed figuring out 
+      how to convert the color to grayscale while preserving the differences, although it was difficult.
+      I accomplished this by converting the image to the HSV space and 
+      using <code>cv2.Sobel</code> to compute an intesity gradient. 
+      Then, I was able to blend the intensity gradient to the original 
+      grayscale image and adjusted the alpha values to maintain intensity while
+      also preserving the "color" in the gray image.
+    </p>
+
+    <div id="row">
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/images/colorBlindTest35.png" id="figure" />
+        <figcaption align="middle">original image</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/results/BW_color35GRAY.png" id="figure" />
+        <figcaption align="middle">gray original</figcaption>
+      </div>
+      <div id="img-contain">
+        <img src="proj1-gradient-domain/results/BWcolor35FINAL.png" id="figure" />
+        <figcaption align="middle">final</figcaption>
+    </div>
+  </div>
+
+  <div id="row">
+    <div id="img-contain">
+      <img src="proj1-gradient-domain/images/colorblind12.png" id="figure" />
+      <figcaption align="middle">original image</figcaption>
+    </div>
+    <div id="img-contain">
+      <img src="proj1-gradient-domain/results/BW_color12GRAY.png" id="figure" />
+      <figcaption align="middle">gray original</figcaption>
+    </div>
+    <div id="img-contain">
+      <img src="proj1-gradient-domain/results/BWcolor12FINAL.png" id="figure" />
+      <figcaption align="middle">final</figcaption>
+  </div>
+</div>
+
+<h1>Bells and Whistles: Python Starter Code</h1>
+
+<p>
+  I saw on Ed that someone was inquiring for starter code in Python, and I was
+  hoping to provide some of my code to help future years! I included a few functions
+  in <code>starter_code.py</code>. I tried to document them well, but here's a summary 
+  of each of the functions:
+</p>
+
+<ul> 
+  <li>
+    <code>load_image()</code>: This function loads the image.
+  </li>
+  <br>
+  <li>
+    <code>improved_get_mask()</code>: This function is my improvement of the latter functions. It allows the user to
+    select the region around their object and select the destination of the object as well. This also scales and pads 
+    the object to the size of the destination image for use in future functions.
+  </li>
+  <br>
+  <li>
+    <code>scale_mask_to_dest()</code>: Helper function to get_mask(). This function
+    scales the mask to the size of the destination image.
+  </li>
+  <br>
+  <li>
+    <code>get_mask()</code>: This function allows the user to select the region around their object and select 
+    the destination of the object as well. It uses <code>scale_mask_to_dest()</code>
+    to scale the mask to the size of the destination image. 
+  </li>
+</ul>
+  <i>*I created <code>get_mask()</code> first, but I ended up using <code>improved_get_mask()</code> primarily.</i>
+
+
+  <br><br><br>
+  <hr>
+  
+  <div id="center">
+    <br>
+    <div id="row-buttons">
+        <a href='index.html'><button disabled>Gradient Domain</button></a>
+        <a href='proj2-index.html'><button>Image Quilting</button></a>
+        <a href='proj3-index.html'><button>Lightfield Camera</button></a>
+    </div>
+</div>
+  </body>
+</html>
